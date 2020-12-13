@@ -13,9 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-
 app.use(require('./routes/user'));
-
 
 mongoose.connect(process.env.URL_DB, {
     useNewUrlParser: true,
@@ -27,7 +25,6 @@ mongoose.connect(process.env.URL_DB, {
 
     console.log('Data Base ONLINE');
 });
-
 
 app.listen(process.env.PORT, () => {
     console.log('Listening to port: ', process.env.PORT);
