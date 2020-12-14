@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+const User = require('../models/user');
 
 // ================================
 // Verify Token
@@ -23,6 +24,55 @@ let verifyToken = (req, res, next) => {
     });
 };
 
+// ================================
+// Verify AdminRole
+// ================================
+let verifyAdminRole = (req, res, next) => {
+
+    if (!req.user) {
+        return res.status(404).json({
+            ok: false,
+            err: {
+                message: 'User not found'
+            }
+        });
+    }
+
+    User.findById(req.user._id, function(err, userDB) {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err: {
+                    message: 'Internal Server Error'
+                }
+            });
+        }
+
+        if (!userDB) {
+            return res.status(404).json({
+                ok: false,
+                err: {
+                    message: 'User not found'
+                }
+            });
+        }
+
+        req.user = userDB;
+
+        if (userDB.role == 'ADMIN_ROLE') {
+            next();
+        } else {
+            return res.status(403).json({
+                ok: false,
+                err: {
+                    message: 'The user is not an administrator'
+                }
+            });
+        }
+    });
+};
+
 module.exports = {
-    verifyToken
+    verifyToken,
+    verifyAdminRole
 }

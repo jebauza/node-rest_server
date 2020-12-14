@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const User = require('../models/user');
-const { verifyToken } = require('../middlewares/auth')
+const { verifyToken, verifyAdminRole } = require('../middlewares/auth')
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.get('/users', verifyToken, (req, res) => {
         });
 });
 
-app.post('/users', verifyToken, (req, res) => {
+app.post('/users', [verifyToken, verifyAdminRole], (req, res) => {
 
     let body = req.body;
 
@@ -73,7 +73,7 @@ app.post('/users', verifyToken, (req, res) => {
     } */
 });
 
-app.put('/users/:id', verifyToken, (req, res) => {
+app.put('/users/:id', [verifyToken, verifyAdminRole], (req, res) => {
 
     let id = req.params.id;
     let user = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
@@ -97,7 +97,7 @@ app.put('/users/:id', verifyToken, (req, res) => {
 
 });
 
-app.delete('/users/:id', verifyToken, (req, res) => {
+app.delete('/users/:id', [verifyToken, verifyAdminRole], (req, res) => {
     let id = req.params.id;
 
     User.findByIdAndUpdate(id, { state: 'I' }, { new: true }, (err, userRemove) => {
@@ -109,7 +109,7 @@ app.delete('/users/:id', verifyToken, (req, res) => {
         }
 
         if (!userRemove) {
-            return res.status(400).json({
+            return res.status(404).json({
                 ok: false,
                 err: {
                     message: 'User not found'
