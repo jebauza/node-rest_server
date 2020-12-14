@@ -4,10 +4,11 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const User = require('../models/user');
+const { verifyToken } = require('../middlewares/auth')
 
 const app = express();
 
-app.get('/users', function(req, res) {
+app.get('/users', verifyToken, (req, res) => {
 
     let from = Number(req.query.from || 0);
     let limit = Number(req.query.limit || 10);
@@ -33,7 +34,7 @@ app.get('/users', function(req, res) {
         });
 });
 
-app.post('/users', function(req, res) {
+app.post('/users', verifyToken, (req, res) => {
 
     let body = req.body;
 
@@ -72,7 +73,7 @@ app.post('/users', function(req, res) {
     } */
 });
 
-app.put('/users/:id', function(req, res) {
+app.put('/users/:id', verifyToken, (req, res) => {
 
     let id = req.params.id;
     let user = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
@@ -96,19 +97,19 @@ app.put('/users/:id', function(req, res) {
 
 });
 
-app.delete('/users/:id', function(req, res) {
+app.delete('/users/:id', verifyToken, (req, res) => {
     let id = req.params.id;
 
     User.findByIdAndUpdate(id, { state: 'I' }, { new: true }, (err, userRemove) => {
         if (err) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 err
             });
         }
 
         if (!userRemove) {
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
                 err: {
                     message: 'User not found'
