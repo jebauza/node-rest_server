@@ -1,15 +1,17 @@
 const express = require('express');
 
+// Middlewares
+const { verifyToken, verifyAdminRole } = require('../middlewares/auth');
+
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
-const User = require('../models/user');
-const { verifyToken, verifyAdminRole } = require('../middlewares/auth')
-
-const app = express();
+let app = express();
+let User = require('../models/user');
 
 app.get('/users', verifyToken, (req, res) => {
 
+    //Paginate
     let from = Number(req.query.from || 0);
     let limit = Number(req.query.limit || 10);
 
@@ -38,7 +40,7 @@ app.post('/users', [verifyToken, verifyAdminRole], (req, res) => {
 
     let body = req.body;
 
-    let user = new User({
+    let newUser = new User({
         name: body.name,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),
@@ -46,7 +48,7 @@ app.post('/users', [verifyToken, verifyAdminRole], (req, res) => {
         role: body.role
     });
 
-    user.save((err, userDB) => {
+    newUser.save((err, userDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -55,7 +57,7 @@ app.post('/users', [verifyToken, verifyAdminRole], (req, res) => {
         }
 
         //userDB.password = null;
-        res.json({
+        res.status(201).json({
             ok: true,
             user: userDB
         });
