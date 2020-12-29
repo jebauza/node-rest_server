@@ -72,7 +72,32 @@ let verifyAdminRole = (req, res, next) => {
     });
 };
 
+// ================================
+// Verify token URL
+// ================================
+let verifyTokenURL = (req, res, next) => {
+    let token = req.query.token;
+
+    jwt.verify(token, process.env.APP_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: {
+                    message: 'Invalid token'
+                }
+            });
+        }
+
+        req.user = decoded.user;
+        next();
+    });
+};
+
+
+
+
 module.exports = {
     verifyToken,
-    verifyAdminRole
+    verifyAdminRole,
+    verifyTokenURL
 }
