@@ -10,7 +10,7 @@ const Product = require('../models/product');
 
 
 // default options
-app.use(fileUpload({ useTempFiles: true }));
+app.use(fileUpload());
 
 app.put('/upload/:type/:id', function(req, res) {
     let type = req.params.type;
