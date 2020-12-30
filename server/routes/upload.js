@@ -95,7 +95,7 @@ function userUploadImg(file, userId, res, fileName) {
             });
         }
 
-        file.mv(path.resolve(__dirname, `../../uploads/${folder}/${fileName}`), (err) => {
+        file.mv(`uploads/${folder}/${fileName}`, (err) => {
             if (err) {
                 fileDelete(fileName, folder);
                 return res.status(500)
@@ -105,25 +105,25 @@ function userUploadImg(file, userId, res, fileName) {
                         err
                     });
             }
-        });
 
-        let oldImg = userDB.img;
-        userDB.img = fileName
-        userDB.save((err, userSave) => {
-            if (err) {
-                return res.status(500)
-                    .json({
-                        ok: false,
-                        err
-                    });
-            }
+            let oldImg = userDB.img;
+            userDB.img = fileName
+            userDB.save((err, userSave) => {
+                if (err) {
+                    return res.status(500)
+                        .json({
+                            ok: false,
+                            err
+                        });
+                }
 
-            fileDelete(oldImg, folder);
+                fileDelete(oldImg, folder);
 
-            res.json({
-                ok: true,
-                img: fileName,
-                user: userSave
+                res.json({
+                    ok: true,
+                    img: fileName,
+                    user: userSave
+                });
             });
         });
     });
@@ -158,25 +158,25 @@ function productUploadImg(file, productId, res, fileName) {
                         err
                     });
             }
-        });
 
-        let oldImg = productDB.img;
-        productDB.img = fileName
-        productDB.save((err, productSave) => {
-            if (err) {
-                return res.status(500)
-                    .json({
-                        ok: false,
-                        err
-                    });
-            }
+            let oldImg = productDB.img;
+            productDB.img = fileName
+            productDB.save((err, productSave) => {
+                if (err) {
+                    return res.status(500)
+                        .json({
+                            ok: false,
+                            err
+                        });
+                }
 
-            fileDelete(oldImg, folder);
+                fileDelete(oldImg, folder);
 
-            res.json({
-                ok: true,
-                img: fileName,
-                product: productSave
+                res.json({
+                    ok: true,
+                    img: fileName,
+                    product: productSave
+                });
             });
         });
     });
