@@ -101,12 +101,13 @@ function userUploadImg(file, userId, res, fileName) {
         file.mv(`uploads/${folder}/${fileName}`, (err) => {
             if (err) {
                 fileDelete(fileName, folder);
-                return res.status(500)
-                    .json({
-                        ok: false,
-                        message: 'file.mv',
-                        err
-                    });
+                return res.send(err);
+                /* .status(500)
+                .json({
+                    ok: false,
+                    message: 'file.mv',
+                    err
+                }); */
             }
 
             let oldImg = userDB.img;
