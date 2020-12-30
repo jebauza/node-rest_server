@@ -97,7 +97,7 @@ function userUploadImg(file, userId, res, fileName) {
             });
         }
 
-        file.mv(`uploads/${folder}/${fileName}`, (err) => {
+        file.mv(path.resolve(__dirname, `../../uploads/${folder}/${fileName}`), (err) => {
             if (err) {
                 fileDelete(fileName, folder);
                 return res.status(500)
