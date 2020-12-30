@@ -101,6 +101,7 @@ function userUploadImg(file, userId, res, fileName) {
                 return res.status(500)
                     .json({
                         ok: false,
+                        message: 'file.mv',
                         err
                     });
             }
