@@ -11,8 +11,7 @@ const Product = require('../models/product');
 
 // default options
 app.use(fileUpload({
-    useTempFiles: true,
-    tempFileDir: '/tmp/'
+    useTempFiles: true
 }));
 
 app.put('/upload/:type/:id', function(req, res) {
@@ -101,13 +100,12 @@ function userUploadImg(file, userId, res, fileName) {
         file.mv(`uploads/${folder}/${fileName}`, (err) => {
             if (err) {
                 fileDelete(fileName, folder);
-                return res.send(err);
-                /* .status(500)
-                .json({
-                    ok: false,
-                    message: 'file.mv',
-                    err
-                }); */
+                return res.status(500)
+                    .json({
+                        ok: false,
+                        message: 'file.mv',
+                        err
+                    });
             }
 
             let oldImg = userDB.img;
